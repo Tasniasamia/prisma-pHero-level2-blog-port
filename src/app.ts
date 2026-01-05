@@ -1,9 +1,16 @@
 import express, { Request, Response } from 'express'
 import { postRouter } from './modules/post/post.route';
+import { auth } from './lib/auth';
+import { toNodeHandler } from "better-auth/node";
+import cors from 'cors';
+
 const app=express();
 app.use(express.json());
 app.use(express.urlencoded());
+app.use(cors({ origin: "http://localhost:4000" }));
+app.all("/api/auth/*splat", toNodeHandler(auth));
 app.use('/post',postRouter);
+
 app.get('/',(req:Request,res:Response)=>{
     res.json("HELLO WORLD");
 })
