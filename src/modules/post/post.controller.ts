@@ -43,7 +43,6 @@ const getAllPost = async (req: Request, res: Response) => {
 
     const statusPost = status as PostStatus;
     const Id = authId as string;
-
     const result = await postService.getAllPost({
       search: searchString,
       tags: tagsArray,

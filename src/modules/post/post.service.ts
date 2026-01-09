@@ -44,13 +44,16 @@ const getAllPost = async ({
       ],
     });
   }
-  if (tags && tags?.length > 0) {
+  if (tags && tags.length > 0) {
+    console.log("tasg",tags);
+
     anyConditions.push({
       tags: {
-        has: search as string,
+        hasSome: tags,
       },
     });
   }
+  
   if (typeof isFeatured==="boolean") {
     anyConditions.push({ isFeatured });
   }
