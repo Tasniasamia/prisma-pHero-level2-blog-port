@@ -5,5 +5,6 @@ import { auth, userRole } from "../../middleware/auth";
 const route=Router();
 
 route.post('/',auth(userRole.ADMIN,userRole.USER),postController.createPost);
+route.get('/',postController.getAllPost);
 
 export const postRouter:Router=route;

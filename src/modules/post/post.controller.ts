@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
 import { postService } from "./post.service";
 import { Post } from "../../../generated/prisma/client";
+import { success } from "better-auth/*";
 
 const createPost=async(req:Request,res:Response)=>{
     try{
@@ -16,6 +17,28 @@ catch(error:any){
 }
 }
 
+
+const getAllPost=async(req:Request,res:Response)=>{
+    try{
+      const {search}= req?.query;
+      const searchString=typeof search === "string"?search:undefined;
+      const result=await postService.getAllPost({search:searchString });
+      res.status(200).json({
+        success:true,
+        data:result
+      })
+    }
+    catch(error:any){
+        res.status(400).json({success:false,message:error.message})
+    
+    }
+}
+
+
+
+
+
+
 export const postController={
-    createPost
+    createPost,getAllPost
 }
