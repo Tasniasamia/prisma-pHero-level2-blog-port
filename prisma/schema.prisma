@@ -23,7 +23,7 @@ model Post {
   status     PostStatus @default(PUBLISHED)
   tags       String[]
   views      Int        @default(0)
-  authId     Int
+  authId     String
   createdAt  DateTime   @default(now())
   updatedAt  DateTime   @updatedAt
   comments   Comment[]
@@ -41,7 +41,7 @@ enum PostStatus {
 model Comment {
   id        Int           @id @default(autoincrement())
   content   String        @db.Text
-  authorId  Int
+  authorId  String
   postId    Int
   posts     Post          @relation(fields: [postId], references: [id])
   parentId  Int?
@@ -62,6 +62,10 @@ enum CommentStatus {
   REJECT
 }
 
+enum UserRole{
+  ADMIN
+  USER
+}
 model User {
   id            String    @id
   name          String
@@ -73,7 +77,7 @@ model User {
   sessions      Session[]
   accounts      Account[]
 
-  role String? @default("USER")
+  role UserRole @default(USER)
 
   @@unique([email])
   @@map("user")

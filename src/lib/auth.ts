@@ -30,14 +30,24 @@ export const auth = betterAuth({
              } 
          }
      },
-    emailAndPassword: { 
+      emailAndPassword: { 
         enabled: true, 
         autoSignIn:false,
         requireEmailVerification:true,
       }, 
+      socialProviders: {
+        google: { 
+            clientId: process.env.GOOGLE_CLIENT_ID as string, 
+            clientSecret: process.env.GOOGLE_CLIENT_SECRET as string, 
+            accessType: "offline", 
+            prompt: "select_account consent", 
+        }, 
+    },
+
+
       emailVerification: {
         sendOnSignUp:true,
-        
+        autoSignInAfterVerification:true,
         sendVerificationEmail: async ({ user, url, token }, request) => {
       
           const verificationUrl = `${process.env.BETTER_AUTH_URL}/verification_email?token=${token}`;
