@@ -6,5 +6,6 @@ const route=Router();
 
 route.post('/',auth(userRole.ADMIN,userRole.USER),postController.createPost);
 route.get('/',postController.getAllPost);
+route.get('/:postId',postController.getPostById)
 
 export const postRouter:Router=route;
