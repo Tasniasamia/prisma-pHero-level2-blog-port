@@ -1,5 +1,6 @@
 import { Request, Response } from "express";
 import { commentService } from "./comment.service";
+import { success } from "better-auth/*";
 
 const createComment=async(req:Request,res:Response)=>{
 try{
@@ -43,6 +44,7 @@ if(!authorId){
     throw new Error('Author Id is required');
 }
 const result=await commentService.getCommentByAuthor({authorId:authorId})
+res.status(200).json(result);
 }
 catch(error){
     res.status(400).json({
@@ -61,13 +63,45 @@ const deleteComment=async(req:Request,res:Response)=>{
             throw new Error('commentId is required');
           }   
           const result=await commentService.deleteComment({authorId:user?.id as string,id:Number(commentId)})
+          if(result){
+            res.status(200).json({
+                success:true,
+                message:"Comment deleted Successfully",
+                data:result
+            })
+          }
     }
     catch(error){
         res.status(400).json({
             success:false,
             details:error,
-            error:'Delete comment failed'
+            error:'Comment deletion failed'
 
+        })
+    }
+}
+
+const updateComment=async(req:Request,res:Response)=>{
+    try{
+        const {commentId}=req.params;
+        const user=req?.user;
+        if(!commentId){
+          throw new Error('commentId is required');
+        }
+        
+        const result=await commentService.updateComment({authorId:user?.id as string,id:Number(commentId) ,data:req.body});
+        res.status(201).json({
+            success:false,
+            message:"comment updated successfully",
+            data:result
+
+        })
+    }
+    catch(error){
+        res.status(400).json({
+            success:false,
+            details:error,
+            error:"Delete comment failed"
         })
     }
 }
@@ -76,5 +110,6 @@ export const commentController={
     createComment,
     getCommentById,
     getCommentByAuthor,
-    deleteComment
+    deleteComment,
+    updateComment
 }
