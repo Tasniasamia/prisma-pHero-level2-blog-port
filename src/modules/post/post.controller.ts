@@ -3,6 +3,8 @@ import { postService } from "./post.service";
 import { Post, PostStatus } from "../../../generated/prisma/client";
 import { boolean, success } from "better-auth/*";
 import paginationSortingHelper from "../../helpers/paginationSortingHelper";
+import { prisma } from "../../lib/prisma";
+import { userRole } from "../../middleware/auth";
 
 const createPost = async (req: Request, res: Response) => {
   try {
@@ -89,6 +91,8 @@ res.status(200).json(result);
   }
 }
 
+
+
 const getMyPost=async(req:Request,res:Response)=>{
 try{
 const user=req.user;
@@ -96,6 +100,7 @@ if(!user){
   throw new Error('You are unauthorized');
 }
 const result=await postService.getMyPost(user?.id as string);
+res.status(200).json(result);
 }
 catch(error){
 const errorMessage=(error instanceof Error)?error.message:"Failed to fetch data";
@@ -107,9 +112,32 @@ res.status(400).json({
 }
 }
 
+
+const updatePost=async(req:Request,res:Response)=>{
+  try{
+  const user=req.user;
+  const{postId}=req.params;
+  if(!user){
+    throw new Error('You are unauthorized');
+  }
+const isAdmin=user?.role === userRole.ADMIN;
+const result=await postService.updatePost(Number(postId),req.body, user?.id,isAdmin);
+res.status(200).json(result);
+  }
+  catch(error){
+  const errorMessage=(error instanceof Error)?error.message:"Post Update failed";
+  res.status(400).json({
+      success:false,
+      error:errorMessage,
+      details:error
+    })
+  }
+  }
+
 export const postController = {
   createPost,
   getAllPost,
   getPostById,
-  getMyPost
+  getMyPost,
+  updatePost
 };

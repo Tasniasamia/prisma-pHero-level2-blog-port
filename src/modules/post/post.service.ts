@@ -147,11 +147,36 @@ const result= await prisma.post.findMany({
   
 })
 
-return result
+return result;
 }
+
+const updatePost=async(postId:number,data:Partial<Post>,authId:string,isAdmin:boolean)=>{
+const postData=await prisma.post.findUniqueOrThrow({
+  where:{id:postId},
+  select:{
+    id:true,
+    authId:true
+  }
+});
+if(!isAdmin && (postData?.authId !== authId)){
+  throw new Error('You are not the owner/creator of this post');
+}
+if(!isAdmin){
+  delete data?.isFeatured;
+}
+return await prisma.post.update({
+  where:{id:postData.id},
+  data
+})
+}
+
+
+
+
 export const postService = {
   createPost,
   getAllPost,
   getPostById,
-  getMyPost
+  getMyPost,
+  updatePost
 };
