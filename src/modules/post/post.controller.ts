@@ -21,8 +21,9 @@ const createPost = async (req: Request, res: Response) => {
         });
     }
     
-  } catch (error: any) {
-    res.status(400).json({ success: false,error:"Post creation Failed", details:error});
+  } catch (error) {
+    const errorMessage=(error instanceof Error)?error.message:"Post creation Failed";
+    res.status(400).json({ success: false,error:errorMessage, details:error});
   }
 };
 
@@ -62,8 +63,9 @@ const getAllPost = async (req: Request, res: Response) => {
       success: true,
       ...result
     });
-  } catch (error: any) {
-    res.status(400).json({ success: false,error:"Failed to fetch data" ,details:error });
+  } catch (error) {
+    const errorMessage=(error instanceof Error)?error.message:"Failed to fetch data";
+    res.status(400).json({ success: false,error:errorMessage ,details:error });
   }
 };
 
@@ -79,9 +81,10 @@ res.status(200).json(result);
 
   }
   catch(error){
-    res.status(400).json({
+    const errorMessage=(error instanceof Error)?error.message:"Failed to fetch data";
+   res.status(400).json({
       success:false,
-      error:"",
+      error:errorMessage,
       details:error
     })
   }

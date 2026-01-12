@@ -12,9 +12,10 @@ try{
   }
 }
 catch(error){
+    const errorMessage=(error instanceof Error)?error.message:"Create Comment Failed";
     res.status(400).json({
         success:false,
-        error:"Create Comment Failed",
+        error:errorMessage,
         details:error
     })
 }
@@ -29,10 +30,12 @@ const getCommentById=async(req:Request,res:Response)=>{
       res.status(200).json(result);
     }
     catch(error){
+        const errorMessage=(error instanceof Error)?error.message:"Comment fetched failed";
+
         res.status(400).json({
             success:false,
             details:error,
-            error:"Comment fetched failed"
+            error:errorMessage
         })
     }
 }
@@ -47,10 +50,12 @@ const result=await commentService.getCommentByAuthor({authorId:authorId})
 res.status(200).json(result);
 }
 catch(error){
+    const errorMessage=(error instanceof Error)?error.message:"Comment fetched failed";
+
     res.status(400).json({
         success:false,
         details:error,
-        error:"Comment fetched failed"
+        error:errorMessage
     })
 }
 }
@@ -72,10 +77,11 @@ const deleteComment=async(req:Request,res:Response)=>{
           }
     }
     catch(error){
+        const errorMessage=(error instanceof Error)?error.message:'Comment deletion failed';
         res.status(400).json({
             success:false,
             details:error,
-            error:'Comment deletion failed'
+            error:errorMessage
 
         })
     }
@@ -98,10 +104,11 @@ const updateComment=async(req:Request,res:Response)=>{
         })
     }
     catch(error){
+        const errorMessage=(error instanceof Error)?error.message:"Comment Update failed";
         res.status(400).json({
             success:false,
             details:error,
-            error:"Delete comment failed"
+            error:errorMessage
         })
     }
 }
