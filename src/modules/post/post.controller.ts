@@ -1,4 +1,4 @@
-import { Request, Response } from "express";
+import { NextFunction, Request, Response } from "express";
 import { postService } from "./post.service";
 import { Post, PostStatus } from "../../../generated/prisma/client";
 import { boolean, success } from "better-auth/*";
@@ -6,7 +6,7 @@ import paginationSortingHelper from "../../helpers/paginationSortingHelper";
 import { prisma } from "../../lib/prisma";
 import { userRole } from "../../middleware/auth";
 
-const createPost = async (req: Request, res: Response) => {
+const createPost = async (req: Request, res: Response,next:NextFunction) => {
   try {
     const result = await postService.createPost(
       req.body as Omit<Post, "id" | "createdAt" | "updatedAt">,
@@ -24,8 +24,9 @@ const createPost = async (req: Request, res: Response) => {
     }
     
   } catch (error) {
-    const errorMessage=(error instanceof Error)?error.message:"Post creation Failed";
-    res.status(400).json({ success: false,error:errorMessage, details:error});
+    next(error);
+    // const errorMessage=(error instanceof Error)?error.message:"Post creation Failed";
+    // res.status(400).json({ success: false,error:errorMessage, details:error});
   }
 };
 
