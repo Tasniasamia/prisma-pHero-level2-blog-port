@@ -30,7 +30,7 @@ const createPost = async (req: Request, res: Response) => {
 const getAllPost = async (req: Request, res: Response) => {
   try {
     const { search, tags, isFeatured, status, authId } = req?.query;
-
+    //type defined
     const searchString = typeof search === "string" ? search : undefined;
     const tagsArray = (typeof tags === "string" && tags?.split(",")) || [];
     const postFeatured=isFeatured as string|any;
@@ -44,10 +44,9 @@ const getAllPost = async (req: Request, res: Response) => {
 
     const statusPost = status as PostStatus;
     const Id = authId as string;
-    console.log("query data",req?.query)
+    //generate pagination
     const {page,limit,skip,sortBy,sortOrder}= paginationSortingHelper(req.query);
-
-    const result = await postService.getAllPost({
+   const result = await postService.getAllPost({
       search: searchString,
       tags: tagsArray,
       isFeatured: featured,
@@ -90,8 +89,27 @@ res.status(200).json(result);
   }
 }
 
+const getMyPost=async(req:Request,res:Response)=>{
+try{
+const user=req.user;
+if(!user){
+  throw new Error('You are unauthorized');
+}
+const result=await postService.getMyPost(user?.id as string);
+}
+catch(error){
+const errorMessage=(error instanceof Error)?error.message:"Failed to fetch data";
+res.status(400).json({
+    success:false,
+    error:errorMessage,
+    details:error
+  })
+}
+}
+
 export const postController = {
   createPost,
   getAllPost,
-  getPostById
+  getPostById,
+  getMyPost
 };

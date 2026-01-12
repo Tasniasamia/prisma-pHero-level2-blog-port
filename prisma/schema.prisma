@@ -66,6 +66,10 @@ enum UserRole{
   ADMIN
   USER
 }
+enum UserStatus{
+  ACTIVE
+  INACTIVE
+}
 model User {
   id            String    @id
   name          String
@@ -76,7 +80,7 @@ model User {
   updatedAt     DateTime  @updatedAt
   sessions      Session[]
   accounts      Account[]
-
+  status UserStatus @default(ACTIVE)
   role UserRole @default(USER)
 
   @@unique([email])

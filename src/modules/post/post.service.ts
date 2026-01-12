@@ -2,6 +2,7 @@ import {
   CommentStatus,
   Post,
   PostStatus,
+  UserRole,
 } from "../../../generated/prisma/client";
 import {
   PostWhereInput,
@@ -129,8 +130,28 @@ const getPostById = async (postId: number) => {
     return result;
   });
 };
+const getMyPost=async(authId:string)=>{
+await prisma.user.findUniqueOrThrow({
+  where:{id:authId,status:'ACTIVE'}
+})
+const result= await prisma.post.findMany({
+  where:{authId:authId},
+  orderBy:{createdAt:'desc'},
+  include:{
+    _count:{
+      select:{
+        comments:true
+      },
+    }
+  }
+  
+})
+
+return result
+}
 export const postService = {
   createPost,
   getAllPost,
   getPostById,
+  getMyPost
 };
