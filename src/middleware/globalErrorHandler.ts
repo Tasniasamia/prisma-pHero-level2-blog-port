@@ -24,16 +24,19 @@ function errorHandler (err:any, req:Request, res:Response, next:NextFunction) {
         errorMessage="Foreign key constraint failed on the field";
        }
     }
-    //PrismaRustPanicError : jakhon prisma r engine crush kore
+    //PrismaRustPanicError : jakhon prisma r engine crush kore #task
     //prisma detect korte parena jei error gulo
     else if(err instanceof Prisma.PrismaClientUnknownRequestError){
         statusCode=500;
         errorMessage="Error occurred during query execution"
     }
-    
+    // prisma connect hote partecena. 
     else if(err instanceof Prisma.PrismaClientInitializationError){
-        statusCode=500;
-        errorMessage="Error occurred during query execution"
+        if(err.errorCode === "P1000"){
+            statusCode=401,
+            errorMessage="Authentication failed against database server at {database_host}"
+
+        }
     }
     res.status(statusCode);
     res.json({message:errorMessage,error:errorDetails})
