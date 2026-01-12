@@ -9,6 +9,32 @@ function errorHandler (err:any, req:Request, res:Response, next:NextFunction) {
         statusCode=400;
         errorMessage="You provide incorrect field type or missing fields!";
     }
+    //prisma jei error gulo niye jane
+    else if(err instanceof Prisma.PrismaClientKnownRequestError){
+       if(err.code === 'P2025'){
+        statusCode=400;
+        errorMessage="An operation failed because it depends on one or more records that were required but not found.";
+       }
+      else if(err.code === 'P2002'){
+        statusCode=400;
+        errorMessage="Duplicate key error";
+       }
+       else if(err.code === 'P2003'){
+        statusCode=400;
+        errorMessage="Foreign key constraint failed on the field";
+       }
+    }
+    //PrismaRustPanicError : jakhon prisma r engine crush kore
+    //prisma detect korte parena jei error gulo
+    else if(err instanceof Prisma.PrismaClientUnknownRequestError){
+        statusCode=500;
+        errorMessage="Error occurred during query execution"
+    }
+    
+    else if(err instanceof Prisma.PrismaClientInitializationError){
+        statusCode=500;
+        errorMessage="Error occurred during query execution"
+    }
     res.status(statusCode);
     res.json({message:errorMessage,error:errorDetails})
   }

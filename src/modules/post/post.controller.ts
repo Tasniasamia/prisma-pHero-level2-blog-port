@@ -1,9 +1,7 @@
 import { NextFunction, Request, Response } from "express";
 import { postService } from "./post.service";
 import { Post, PostStatus } from "../../../generated/prisma/client";
-import { boolean, success } from "better-auth/*";
 import paginationSortingHelper from "../../helpers/paginationSortingHelper";
-import { prisma } from "../../lib/prisma";
 import { userRole } from "../../middleware/auth";
 
 const createPost = async (req: Request, res: Response,next:NextFunction) => {
@@ -114,7 +112,7 @@ res.status(400).json({
 }
 
 
-const updatePost=async(req:Request,res:Response)=>{
+const updatePost=async(req:Request,res:Response,next:NextFunction)=>{
   try{
   const user=req.user;
   const{postId}=req.params;
@@ -126,12 +124,13 @@ const result=await postService.updatePost(Number(postId),req.body, user?.id,isAd
 res.status(200).json(result);
   }
   catch(error){
-  const errorMessage=(error instanceof Error)?error.message:"Post Update failed";
-  res.status(400).json({
-      success:false,
-      error:errorMessage,
-      details:error
-    })
+    next(error)
+  // const errorMessage=(error instanceof Error)?error.message:"Post Update failed";
+  // res.status(400).json({
+  //     success:false,
+  //     error:errorMessage,
+  //     details:error
+  //   })
   }
   }
 
