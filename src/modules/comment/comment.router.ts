@@ -9,6 +9,7 @@ route.get('/:commentId',commentController.getCommentById);
 route.get('/author/:authorId',auth(userRole.ADMIN,userRole.USER),commentController.getCommentByAuthor);
 route.delete('/:commentId',auth(userRole.ADMIN,userRole.USER),commentController.deleteComment);
 route.patch('/:commentId',auth(userRole.ADMIN,userRole.USER),commentController.updateComment);
+route.patch('/:commentId/moderate',auth(userRole?.ADMIN),commentController.moderateComment)
 
 
 export const commentRouter:Router=route;
