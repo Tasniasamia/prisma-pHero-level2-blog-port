@@ -112,6 +112,8 @@ const updateComment=async(req:Request,res:Response)=>{
         })
     }
 }
+
+//status update
 const moderateComment=async(req:Request,res:Response)=>{
     try{
        const {commentId}=req.params;
